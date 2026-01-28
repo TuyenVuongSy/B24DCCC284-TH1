@@ -89,4 +89,14 @@
 	{
 		component: './exception/404',
 	},
+	{
+		name: 'Dự đoán số',
+		path: '/du-doan-so',
+		component: './DuDoanSo',
+	},
+	{
+		name: 'Todo List',
+		path: '/todo-list',
+		component: './TodoList',
+	},
 ];
