@@ -1,30 +1,18 @@
 import React, { useState } from 'react';
-import { connect } from 'dva'; 
+import { connect, Dispatch } from 'umi'; // 1. Bỏ TodoState ở đây (vì nó không thuộc umi)
 import { Card, Input, List, Button, Checkbox, Typography, Empty } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
-// --- 1. Tự định nghĩa các Interface cần thiết ---
-interface TodoItem {
-  id: number;
-  content: string;
-  completed: boolean;
-}
-
-interface TodoState {
-  list: TodoItem[];
-}
-
-// Định nghĩa Dispatch thủ công để tránh lỗi import từ 'umi'
-type Dispatch = <T = any>(action: T) => T;
+// 2. Import TodoState từ đúng file Model của bạn
+import { TodoState } from '@/models/todolist';
 
 interface TodoListProps {
   dispatch: Dispatch;
   todoList: TodoState;
 }
-// ------------------------------------------------
 
 const TodoList: React.FC<TodoListProps> = ({ dispatch, todoList }) => {
-  // Fallback để tránh lỗi undefined khi state chưa kịp load
+  // 3. Thêm { list: [] } để tránh lỗi màn hình trắng nếu dữ liệu chưa kịp tải
   const { list } = todoList || { list: [] };
   
   const [inputValue, setInputValue] = useState('');
@@ -32,7 +20,7 @@ const TodoList: React.FC<TodoListProps> = ({ dispatch, todoList }) => {
   const handleAdd = () => {
     if (inputValue.trim()) {
       dispatch({
-        type: 'todoList/add', // Namespace 'todoList' phải khớp với file model
+        type: 'todoList/add',
         payload: inputValue,
       });
       setInputValue('');
@@ -71,21 +59,13 @@ const TodoList: React.FC<TodoListProps> = ({ dispatch, todoList }) => {
         bordered
         dataSource={list}
         locale={{ emptyText: <Empty description="Chưa có công việc nào" /> }}
-        renderItem={(item: TodoItem) => (
+        renderItem={(item: any) => (
           <List.Item
             actions={[
-              <Button 
-                type="text" 
-                danger 
-                icon={<DeleteOutlined />} 
-                onClick={() => handleDelete(item.id)}
-              />
+              <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(item.id)} />
             ]}
           >
-            <Checkbox 
-              checked={item.completed} 
-              onChange={() => handleToggle(item.id)}
-            >
+            <Checkbox checked={item.completed} onChange={() => handleToggle(item.id)}>
               <Typography.Text delete={item.completed} style={{ color: item.completed ? '#999' : 'inherit' }}>
                 {item.content}
               </Typography.Text>
@@ -97,7 +77,6 @@ const TodoList: React.FC<TodoListProps> = ({ dispatch, todoList }) => {
   );
 };
 
-// Kết nối với model
 export default connect(({ todoList }: { todoList: TodoState }) => ({
   todoList,
-}));
+}))(TodoList);
