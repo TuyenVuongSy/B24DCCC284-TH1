@@ -100,4 +100,4 @@ const TodoList: React.FC<TodoListProps> = ({ dispatch, todoList }) => {
 // Kết nối với model
 export default connect(({ todoList }: { todoList: TodoState }) => ({
   todoList,
-}))(TodoList);
+}));

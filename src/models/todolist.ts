@@ -1,7 +1,5 @@
-// 1. KHÔNG import Reducer từ 'umi' nữa để tránh lỗi
 // import { Reducer } from 'umi'; 
 
-// 2. Tự định nghĩa kiểu Reducer thủ công (đơn giản và hiệu quả)
 type Reducer<S> = (state: S | undefined, action: { type: string; payload?: any }) => S;
 
 export interface TodoItem {
